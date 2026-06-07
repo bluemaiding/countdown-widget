@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "桌面倒计时小组件",
   "main": "main.js",
+  "contributors": [
+    "maiding blue <bluemaiding@126.com>",
+    "Claude Opus 4.6 <noreply@anthropic.com>"
+  ],
   "scripts": {
     "start": "electron .",
     "build": "node build.js"
