@@ -1,0 +1,4 @@
+node_modules/
+data.json
+theme.json
+.claude/
