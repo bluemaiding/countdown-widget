@@ -110,7 +110,7 @@
         #setinfo { color: var(--text3); font-size: 11px; text-align: center; margin-top: 8px; }
 
         /* ── Settings ── */
-        #settings { margin: 10px 18px; display: none; }
+        #settings { margin: 10px 18px; display: none; overflow-y: auto; max-height: 260px; }
         #input-name {
             width: 100%; padding: 8px 10px;
             background: var(--picker-bg); border: 1px solid var(--border);
@@ -150,6 +150,7 @@
             width: 100%; padding: 8px; background: var(--accent); color: #fff;
             border: none; border-radius: 8px; font-size: 13px; font-weight: 600;
             cursor: pointer; -webkit-app-region: no-drag; transition: opacity 0.15s;
+            white-space: nowrap;
         }
         #save-btn:hover { opacity: 0.85; }
 
@@ -253,7 +254,7 @@
     <script>
         const { ipcRenderer } = require('electron');
         const $ = id => document.getElementById(id);
-        let target = null, startTime = null, paused = false;
+        let target = null, startTime = null, paused = false, pausedDuration = 0, pauseStart = null;
         const container = $('container');
 
         // ── Theme ──
@@ -326,7 +327,8 @@
             $('secs').textContent = pad(s);
             $('mini-timer').textContent = pad(h) + ':' + pad(m) + ':' + pad(s);
             if (startTime && target > startTime) {
-                const pct = Math.min(100, Math.max(0, (now - startTime) / (target - startTime) * 100));
+                const elapsed = now - startTime - pausedDuration;
+                const pct = Math.min(100, Math.max(0, elapsed / (target - startTime) * 100));
                 $('progress-fill').style.width = pct + '%';
                 $('progress-pct').textContent = Math.round(pct) + '%';
             }
@@ -335,7 +337,7 @@
         // ── Buttons ──
         $('btn-close').addEventListener('click', () => ipcRenderer.send('close'));
         $('btn-refresh').addEventListener('click', () => {
-            target = null; startTime = null; paused = false;
+            target = null; startTime = null; paused = false; pausedDuration = 0; pauseStart = null;
             $('eventname').textContent = '距离目标还有';
             $('setinfo').textContent = '';
             $('hours').textContent = '00';
@@ -353,6 +355,18 @@
         const btnPause = $('btn-pause'), miniPause = $('mini-pause');
         function setPausedState(p) {
             paused = p;
+            if (p) {
+                pauseStart = Date.now();
+            } else {
+                if (pauseStart) pausedDuration += Date.now() - pauseStart;
+                pauseStart = null;
+                if (pausedDuration > 0 && target && startTime) {
+                    target = new Date(target.getTime() + pausedDuration);
+                    startTime = new Date(startTime.getTime() + pausedDuration);
+                    pausedDuration = 0;
+                    ipcRenderer.send('save-data', { target: target.toISOString(), start: startTime.toISOString(), name: $('eventname').textContent });
+                }
+            }
             container.classList.toggle('paused', p);
             btnPause.classList.toggle('playing', !p);
             btnPause.classList.toggle('stopped', p);
@@ -379,6 +393,8 @@
             if (t <= now) t.setDate(t.getDate() + 1);
             target = t;
             startTime = now;
+            pausedDuration = 0;
+            pauseStart = null;
             $('eventname').textContent = name;
             $('setinfo').textContent = '目标: ' + formatTarget(target);
             ipcRenderer.send('save-data', { target: target.toISOString(), start: startTime.toISOString(), name });

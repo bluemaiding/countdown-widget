@@ -3,8 +3,9 @@
 轻量级桌面悬浮倒计时小组件，基于 Electron 构建。支持深色/浅色主题、迷你模式、进度条百分比显示。
 
 ![Node.js](https://img.shields.io/badge/Node.js-v16+-339933?logo=node.js&logoColor=fff)
-![Electron](https://img.shields.io/badge/Electron-37-47848F?logo=electron&logoColor=fff)
+![Electron](https://img.shields.io/badge/Electron-37+-47848F?logo=electron&logoColor=fff)
 ![Platform](https://img.shields.io/badge/Platform-Windows-0078D6?logo=windows&logoColor=fff)
+![License](https://img.shields.io/badge/License-MIT-green)
 
 ## 环境要求
 
@@ -41,7 +42,7 @@ npm start
 ### 窗口控制
 - **拖拽移动** — 按住标题栏任意位置拖动
 - **迷你模式** — 收起为小条，右侧显示暂停/展开/关闭按钮
-- **暂停/继续** — 暂停时数字变红，支持迷你模式
+- **暂停/继续** — 暂停时数字变红，倒计时冻结，恢复后继续，支持迷你模式
 - **刷新** — 左上角 ↻ 按钮，清除当前任务重新开始
 - **关闭** — 右上角 ✕ 按钮
 

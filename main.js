@@ -15,7 +15,7 @@ function getSavedTheme() {
 function createWindow() {
     const win = new BrowserWindow({
         width: 300,
-        height: 400,
+        height: 450,
         frame: false,
         transparent: true,
         resizable: false,
@@ -50,8 +50,8 @@ app.whenReady().then(() => {
             win.setMaximumSize(2200, 440);
             win.setBounds({ x: miniX, y: miniY, width: 220, height: 44 }, true);
         } else {
-            const b = normalBounds || { x: 1500, y: 100, width: 300, height: 400 };
-            win.setMinimumSize(300, 400);
+            const b = normalBounds || { x: 1500, y: 100, width: 300, height: 450 };
+            win.setMinimumSize(300, 450);
             win.setMaximumSize(3000, 4000);
             win.setBounds({ x: b.x, y: b.y, width: b.width || 300, height: b.height || 400 }, true);
         }
